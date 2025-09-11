@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Modulo Ordine di Servizio — Web</title>
+  <style>
+    :root{--max-width:980px;--gap:12px;--accent:#0b67ff}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:#f5f7fb;color:#1f2937;padding:24px;display:flex;justify-content:center}
+    .container{width:100%;max-width:var(--max-width);background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(20,30,60,0.08);padding:20px}
+    h1{font-size:20px;margin:0 0 8px}
+    p.lead{margin:0 0 18px;color:#475569}
+    form{display:grid;grid-template-columns:1fr 320px;gap:18px}
+    .panel{background:#fbfdff;border:1px solid #e6eefb;padding:12px;border-radius:8px}
+    label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+    .field{margin-bottom:12px}
+    select,input[type="text"],input[type="number"],textarea{width:100%;padding:8px;border:1px solid #d1d9e6;border-radius:6px;font-size:14px}
+    textarea{min-height:80px;resize:vertical}
+    .small{font-size:13px;color:#475569}
+    .controls{display:flex;gap:8px;align-items:center}
+    .full{grid-column:1/-1}
+    .btn{background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+    .btn.secondary{background:#fff;color:var(--accent);border:1px solid #cfe0ff}
+    .summary{background:#fff;padding:12px;border-radius:8px;border:1px solid #eef2ff}
+    table{width:100%;border-collapse:collapse}
+    td,th{padding:8px;text-align:left;border-bottom:1px solid #f1f5f9}
+    .right{text-align:right}
+    .muted{color:#6b7280;font-size:13px}
+    .error{color:#b91c1c;font-weight:600}
+    @media (max-width:900px){form{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <h1>Ordine di Servizio — Modulo Web</h1>
+    <p class="lead">Modulo convertito dal PDF. Compila i campi e calcola i costi automaticamente. Usa il pulsante "Stampa/Salva PDF" per salvare il modulo compilato.</p>
+
+    <form id="moduloForm" autocomplete="off">
+      <div>
+        <div class="panel">
+          <div class="field">
+            <label for="progetto">Progetto</label>
+            <select id="progetto" name="PROGETTO">
+              <option value="SELEZIONARE">SELEZIONARE</option>
+              <option value="SAI-A01">SAI-A01</option>
+              <option value="SAI-A02">SAI-A02</option>
+              <option value="SAI-A03">SAI-A03</option>
+            </select>
+            <div class="small muted">Seleziona il progetto per popolare Struttura ed Ente</div>
+          </div>
+
+          <div class="field">
+            <label for="struttura">Struttura</label>
+            <select id="struttura" name="STRUTTURA"><option>SELEZIONARE</option></select>
+          </div>
+
+          <div class="field">
+            <label for="ente">Ente</label>
+            <select id="ente" name="ENTE"><option>SELEZIONARE</option></select>
+          </div>
+
+          <div class="field">
+            <label for="indirizzo">Indirizzo</label>
+            <input id="indirizzo" name="INDIRIZZO" type="text" placeholder="Via, Piazza, etc." readonly />
+          </div>
+
+          <div class="field">
+            <label for="descrizione">Descrizione dei lavori</label>
+            <textarea id="descrizione" name="DESCRIZIONE" placeholder="Descrivi il lavoro svolto..."></textarea>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="field">
+              <label for="data">Data lavoro</label>
+              <input id="data" name="DATA" type="date" />
+            </div>
+            <div class="field">
+              <label for="operatori">Numero operatori</label>
+              <input id="operatori" name="NUM_OPERATORI" type="number" min="0" step="1" value="1" />
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="field">
+              <label for="totOre">Totale ore</label>
+              <input id="totOre" name="TOT_ORE" type="number" min="0" step="0.5" value="0" />
+            </div>
+            <div class="field">
+              <label for="mq">Metri quadrati (mq)</label>
+              <input id="mq" name="MQ" type="number" min="0" step="0.1" value="0" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Tipologia lavoro (seleziona le voci applicate)</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <label><input type="checkbox" id="manutenzione_chk" name="MANUTENZIONE_CHECK"/> Manutenzione</label>
+              <label><input type="checkbox" id="pulizie_chk" name="PULIZIE_CHECK"/> Servizio pulizie</label>
+              <label><input type="checkbox" id="sanificazione_chk" name="SANIFICAZIONE_CHECK"/> Sanificazione</label>
+              <label><input type="checkbox" id="disinfestazione_chk" name="DISINFESTAZIONE_CHECK"/> Disinfestazione</label>
+              <label><input type="checkbox" id="derattizzazione_chk" name="DERATTIZZAZIONE_CHECK"/> Derattizzazione</label>
+            </div>
+            <div class="small muted">I costi vengono calcolati automaticamente in base ai campi inseriti.</div>
+          </div>
+
+        </div>
+
+        <div class="panel" style="margin-top:12px">
+          <label>Appunto sul lavoro svolto</label>
+          <textarea id="appunto" name="APPUNTO" placeholder="Note aggiuntive..."></textarea>
+        </div>
+
+      </div>
+
+      <aside class="panel">
+        <h3 style="margin-top:0">Riepilogo costi</h3>
+        <div class="summary">
+          <table aria-live="polite">
+            <tbody>
+              <tr><td>Manutenzione (€/ora per operatore)</td><td class="right">€ <span id="rate_manutenzione">25.00</span></td></tr>
+              <tr><td>Pulizie (€/ora per operatore)</td><td class="right">€ <span id="rate_pulizie">20.00</span></td></tr>
+              <tr><td>Sanificazione (€/mq)</td><td class="right">€ <span id="rate_sanificazione">2.00</span></td></tr>
+              <tr><td>Disinfestazione (€/mq)</td><td class="right">€ <span id="rate_disinfestazione">4.50</span></td></tr>
+              <tr><td>Derattizzazione (€/mq)</td><td class="right">€ <span id="rate_derattizzazione">6.50</span></td></tr>
+              <tr><th>Subtotale</th><th class="right">€ <span id="subtotal">0.00</span></th></tr>
+              <tr><td>IVA (22%)</td><td class="right">€ <span id="iva">0.00</span></td></tr>
+              <tr><th>Totale</th><th class="right">€ <span id="total">0.00</span></th></tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end">
+            <button type="button" class="btn" id="calc">Calcola</button>
+            <button type="button" class="btn secondary" id="reset">Reset</button>
+          </div>
+        </div>
+
+        <div style="margin-top:14px">
+          <label class="small">Operatore di struttura (firma)</label>
+          <input id="operatoreFirma" name="OPERATORE_FIRMA" type="text" />
+        </div>
+
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button type="button" class="btn" id="print">Stampa / Salva PDF</button>
+          <button type="button" class="btn secondary" id="exportJson">Esporta (JSON)</button>
+        </div>
+
+      </aside>
+
+      <div class="full" style="margin-top:12px">
+        <div class="muted">Versione web del modulo. I campi compilati possono essere stampati o esportati in JSON.</div>
+      </div>
+    </form>
+
+  </div>
+
+  <script>
+    const STRUTTURA = {
+      "SAI-A01": ["SELEZIONARE","AVELLINO"],
+      "SAI-A02": ["SELEZIONARE","AVELLINO","BENEVENTO"],
+      "SAI-A03": ["SELEZIONARE","BENEVENTO"],
+      "SELEZIONARE": ["SELEZIONARE"]
+    };
+    const ENTE = {
+      "SAI-A01": ["SELEZIONARE","PERCORSI","AIC"],
+      "SAI-A02": ["SELEZIONARE","PERCORSI"],
+      "SAI-A03": ["SELEZIONARE","PERCORSI"],
+      "SELEZIONARE": ["SELEZIONARE"]
+    };
+
+    const INDIRIZZO = {
+      "AVELLINO": "Via Roma 12, Avellino",
+      "BENEVENTO": "Corso Garibaldi 99, Benevento",
+      "SELEZIONARE": ""
+    };
+
+    const RATES = {
+      MANUTENZIONE: 25.00,
+      PULIZIE: 20.00,
+      SANIFICAZIONE: 2.00,
+      DISINFESTAZIONE: 4.50,
+      DERATTIZZAZIONE: 6.50
+    };
+
+    function euro(n){ return Number(n||0).toFixed(2); }
+
+    const progettoEl = document.getElementById('progetto');
+    const strutturaEl = document.getElementById('struttura');
+    const enteEl = document.getElementById('ente');
+    const operatoriEl = document.getElementById('operatori');
+    const totOreEl = document.getElementById('totOre');
+    const mqEl = document.getElementById('mq');
+
+    const manutenzioneChk = document.getElementById('manutenzione_chk');
+    const pulizieChk = document.getElementById('pulizie_chk');
+    const sanificazioneChk = document.getElementById('sanificazione_chk');
+    const disinfestazioneChk = document.getElementById('disinfestazione_chk');
+    const derattizzazioneChk = document.getElementById('derattizzazione_chk');
+
+    const subtotalEl = document.getElementById('subtotal');
+    const ivaEl = document.getElementById('iva');
+    const totalEl = document.getElementById('total');
+
+    document.getElementById('rate_manutenzione').textContent = euro(RATES.MANUTENZIONE);
+    document.getElementById('rate_pulizie').textContent = euro(RATES.PULIZIE);
+    document.getElementById('rate_sanificazione').textContent = euro(RATES.SANIFICAZIONE);
+    document.getElementById('rate_disinfestazione').textContent = euro(RATES.DISINFESTAZIONE);
+    document.getElementById('rate_derattizzazione').textContent = euro(RATES.DERATTIZZAZIONE);
+
+    function popolaSelect(selectEl, items){
+      selectEl.innerHTML = '';
+      items.forEach(it=>{
+        const opt = document.createElement('option'); opt.value = it; opt.textContent = it; selectEl.appendChild(opt);
+      });
+    }
+
+    function aggiornaCascata(){
+      const val = progettoEl.value || 'SELEZIONARE';
+      popolaSelect(strutturaEl, STRUTTURA[val] || ['SELEZIONARE']);
+      popolaSelect(enteEl, ENTE[val] || ['SELEZIONARE']);
+    }
+
+    function aggiornaIndirizzo() {
+      const struttura = strutturaEl.value;
+      document.getElementById('indirizzo').value = INDIRIZZO[struttura] || "";
+    }
+
+    progettoEl.addEventListener('change', ()=>{ aggiornaCascata(); aggiornaIndirizzo(); });
+    strutturaEl.addEventListener('change', aggiornaIndirizzo);
+    enteEl.addEventListener('change', aggiornaIndirizzo);
+
+    aggiornaCascata();
+    aggiornaIndirizzo();
+
+    function calcola() {
+      const operatori = Math.max(0, Number(operatoriEl.value) || 0);
+      const ore = Math.max(0, Number(totOreEl.value) || 0);
+      const mq = Math.max(0, Number(mqEl.value) || 0);
+
+      let subtotal = 0;
+      if (manutenzioneChk.checked) subtotal += RATES.MANUTENZIONE * ore * operatori;
+      if (pulizieChk.checked) subtotal += RATES.PULIZIE * ore * operatori;
+      if (sanificazioneChk.checked) subtotal += RATES.SANIFICAZIONE * mq;
+      if (disinfestazioneChk.checked) subtotal += RATES.DISINFESTAZIONE * mq;
+      if (derattizzazioneChk.checked) subtotal += RATES.DERATTIZZAZIONE * mq;
+
+      const iva = subtotal * 0.22;
+      const total = subtotal + iva;
+
+      subtotalEl.textContent = euro(subtotal);
+      ivaEl.textContent = euro(iva);
+      totalEl.textContent = euro(total);
+
+      return { subtotal, iva, total };
+    }
+
+    document.getElementById('calc').addEventListener('click', calcola);
+
+    document.getElementById('reset').addEventListener('click', ()=>{
+      document.getElementById('moduloForm').reset();
+      aggiornaCascata();
+      aggiornaIndirizzo();
+      subtotalEl.textContent = '0.00'; ivaEl.textContent='0.00'; totalEl.textContent='0.00';
+    });
+
+    document.getElementById('print').addEventListener('click', ()=>{
+      calcola();
+      window.print();
+    });
+
+    document.getElementById('exportJson').addEventListener('click', ()=>{
+      calcola();
+      const data = new FormData(document.getElementById('moduloForm'));
+      const obj = {};
+      for (const [k,v] of data.entries()) obj[k] = v;
+      obj.MANUTENZIONE = manutenzioneChk.checked;
+      obj.PULIZIE = pulizieChk.checked;
+      obj.SANIFICAZIONE = sanificazioneChk.checked;
+      obj.DISINFESTAZIONE = disinfestazioneChk.checked;
+      obj.DERATTIZZAZIONE = derattizzazioneChk.checked;
+      const totals = calcola();
+      obj.SUBTOTAL = euro(totals.subtotal);
+      obj.IVA = euro(totals.iva);
+      obj.TOTAL = euro(totals.total);
+
+      const blob = new Blob([JSON.stringify(obj, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'modulo_compilato.json'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('moduloForm').addEventListener('submit', (e)=>{ e.preventDefault(); });
+
+    document.addEventListener('keydown', (e)=>{
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)){
+        e.preventDefault(); document.getElementById('print').click();
+      }
+    });
+  </script>
+</body>
+</html>
