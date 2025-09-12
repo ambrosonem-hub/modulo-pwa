@@ -2,7 +2,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open('modulo-cache').then(cache => {
       return cache.addAll([
-        '/modulo_web_modificato.html',
+        '/MODULO.html',
         '/manifest.json',
         '/icon-192.png',
         '/icon-512.png'
