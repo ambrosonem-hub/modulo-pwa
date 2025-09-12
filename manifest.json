@@ -1,7 +1,7 @@
 {
   "name": "Modulo Ordine di Servizio",
   "short_name": "Modulo Servizi",
-  "start_url": "modulo_web_modificato.html",
+  "start_url": "MODULO.html",
   "display": "standalone",
   "background_color": "#f5f7fb",
   "theme_color": "#0b67ff",
